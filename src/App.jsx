@@ -1,14 +1,17 @@
 import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import "./App.css";
 
 import Header from "./components/Header";
-import Hero from "./components/Hero";
-import ProductCard from "./components/ProductCard";
 import Footer from "./components/Footer";
-import CartItem from "./components/CartItem";
+
+import HomePage from "./pages/HomePage";
+import ProductsPage from "./pages/ProductsPage";
+import CartPage from "./pages/CartPage";
 
 function App() {
-    // Product data
+    const [cart, setCart] = useState([]);
     const products = [
         {
             id: 1,
@@ -54,78 +57,54 @@ function App() {
         }
     ];
 
-    const [cart, setCart] = useState([]); 
-    
-    const addToCart = (product) => { 
+    const addToCart = (product) => {
         setCart([...cart, product]);
-     }; 
-     
-     const removeFromCart = (indexToRemove) => { 
-        setCart(
-            cart.filter((_, index) => index !== indexToRemove)
-        );
-    }; 
-    
-    const cartTotal = cart.reduce(
-        (total, product) => total + product.price, 
-        0
-    ); 
-    
+    };
+
+    const removeFromCart = (indexToRemove) => {
+        setCart(cart.filter((_, index) => index !== indexToRemove));
+    };
+
     return (
-    <div className="app"> 
-    <Header
-    storeName="PC Component Store" 
-    cartCount={cart.length} 
-    /> 
-    <Hero 
-    title="Build Your Dream PC" 
-    subtitle="Find the right components to create YOUR dream PC." 
-    ctaText="Shop Components" 
-    /> 
-    
-    <div className="main-content"> 
-        <h2>Featured Products</h2> 
-        
-        <div className="product-list"> 
-            {products.map((product) => (
-                <ProductCard 
-                key={product.id} 
-                product={product} 
-                onAddToCart={addToCart} />
-            ))} 
-            </div> 
-                <div className="cart"> 
-                    <h2>Shopping Cart</h2> 
-                    
-                    <p>Items in cart: {cart.length}</p> 
-                    
-                    {cart.length === 0 ? (
-                        <p>Your cart is empty!</p>
-                    ) : (
-                        <div> 
-                            {cart.map((product, index) => (
-                                <CartItem 
-                                key={`${product.id}-${index}`} 
-                                product={product} 
-                                onRemove={() => removeFromCart(index)} 
-                                />
-                            ))} 
-                            
-                            <div className="cart-total"> 
-                                <h3>Total: ${cartTotal.toFixed(2)}</h3> 
-                            </div> 
-                        </div>
-                        )} 
-                    </div> 
-                </div> 
-                
+        <BrowserRouter>
+            <div className="app">
+                <Header cartCount={cart.length} />
+
+                <Routes>
+                    <Route
+                        path="/"
+                        element={<HomePage />}
+                    />
+
+                    <Route
+                        path="/products"
+                        element={
+                            <ProductsPage
+                                products={products}
+                                addToCart={addToCart}
+                            />
+                        }
+                    />
+
+                    <Route
+                        path="/cart"
+                        element={
+                            <CartPage
+                                products={cart}
+                                removeFromCart={removeFromCart}
+                            />
+                        }
+                    />
+                </Routes>
+
                 <Footer 
                 storeName="PC Component Store" 
                 address="123 Computer Lane, Tech City, SC 29000" 
                 phone="(555) 123-4567" 
                 email="support@pccomponentstore.com" 
             /> 
-        </div>
+            </div>
+        </BrowserRouter>
     );
 }
 

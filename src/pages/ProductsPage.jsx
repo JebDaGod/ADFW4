@@ -1,11 +1,21 @@
-function ProductsPage() {
+import ProductCard from "../components/ProductCard";
+
+function ProductsPage({ products, addToCart }) {
     return (
-        <div>
-            <h1>Products Page</h1>
+        <div className="main-content">
+            <h2>Featured Components</h2>
+
+            <div className="product-list">
+                {products.map((product) => (
+                    <ProductCard
+                        key={product.id}
+                        product={product}
+                        onAddToCart={addToCart}
+                    />
+                ))}
+            </div>
         </div>
     );
 }
 
 export default ProductsPage;
-
-// Basic code produced by AI
