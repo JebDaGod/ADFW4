@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
 
 import "./App.css";
 
@@ -11,7 +12,17 @@ import ProductsPage from "./pages/ProductsPage";
 import CartPage from "./pages/CartPage";
 
 function App() {
-    const [cart, setCart] = useState([]);
+
+    const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("componentCart");
+
+    return savedCart ? JSON.parse(savedCart) : [];
+});
+
+useEffect(() => {
+    localStorage.setItem("componentCart", JSON.stringify(cart));
+}, [cart]);
+
     const products = [
         {
             id: 1,
